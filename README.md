@@ -39,6 +39,11 @@ Test password less ssh login
 ```sh
 ansible-playbook  checkpwless.yml
 ```
+Test Python Version 
+```sh
+ansible all -m shell  -a "/usr/bin/python3 -V"
+ansible all -m shell  -a "/usr/bin/python -V"
+```
 Test Ad-hoc 
 ```sh
 ansible all -m ping
