@@ -1,0 +1,23 @@
+---
+- hosts:  all
+  become: true
+  tasks:
+#    - name: Disable swap for current session
+#      command: swapoff -a
+#    - name: Disable swap permanently, persist reboots
+#      replace:
+#        path: /etc/fstab
+#        regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
+#        replace: '#\1\2\3swap\4'
+#        backup: yes
+    - name: Remove swapfile from /etc/fstab
+      mount:
+        name: "{{ item }}"
+        fstype: swap
+        state: absent
+      with_items:
+        - swap
+        - none
+    - name: Disable swap
+      command: swapoff -a
+      when: ansible_swaptotal_mb > 0

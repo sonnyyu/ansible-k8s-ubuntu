@@ -1,0 +1,50 @@
+---
+- hosts: all
+  tasks:
+    - name: Delete content & directory
+      file:
+        state: absent
+        path: $HOME/.kube
+
+    - name: Creating .kube directory
+      file:
+        path: $HOME/.kube
+        state: directory
+        mode: 0755
+        owner: devops
+
+- hosts: kubemasters 
+  tasks:
+    - name: reset the kubernetes cluster on the master node...
+      become: yes
+      shell: kubeadm reset -f
+    - name: Initializing the kubernetes cluster on the master node...
+      become: yes
+      shell: kubeadm init --pod-network-cidr=10.244.0.0/16
+
+    - name: Configuring users cluster access
+      become: yes
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/devops/.kube/config
+        remote_src: yes
+        owner: devops 
+    - name: Fetch kube/config to local
+#      run_once: yes
+      fetch:
+        src: /home/devops/.kube/config
+        dest: /tmp/       
+        flat: yes
+    - name: Installing Pod network.... (Flannel)
+      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+ 
+- hosts: kubeworkers
+  gather_facts: false
+  tasks:
+    - name: copy config file to workers
+#      become: yes
+      copy:
+        src: /tmp/config
+        dest: /home/devops/.kube/config
+        owner: devops
+        mode: 0755

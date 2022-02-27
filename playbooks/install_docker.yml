@@ -1,0 +1,59 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: install 
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+    - name: add GPG key 
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Install repository docker 
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
+        state: present
+    - name: install docker
+      apt:
+        name: "{{item}}"
+        state: latest
+        update_cache: yes
+      loop:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+    - name: enable docker at restart
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+#    - name: copy daemon.json for dockers 
+#      ansible.builtin.copy:
+#        src: daemon.json
+#        dest: /etc/docker/daemon.json
+#      notify:
+#        - restart docker
+    - name: changing Docker to systemd driver
+      copy:
+        dest: "/etc/docker/daemon.json"
+        content: |
+          {
+          "exec-opts": ["native.cgroupdriver=systemd"]
+          }
+      notify:
+        - restart docker
+
+  handlers:
+    - name: restart docker
+      service: 
+        name: docker 
+        state: restarted

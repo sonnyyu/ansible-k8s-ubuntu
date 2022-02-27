@@ -1,0 +1,76 @@
+#################################################
+# DO Community Playbooks: Initial Server Setup
+#################################################
+---
+- hosts: all
+  become: true
+  vars:
+    - create_user: devops 
+    - userpass: password
+  tasks:
+    - name: Remove apt lock file
+      file:
+        state: absent
+        path: "/var/lib/dpkg/lock"
+    - name: Remove apt lock file2
+      file:
+        state: absent
+        path: "/var/lib/dpkg/lock-frontend"
+    - name: Update APT Cache
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+    - name: Upgrade all packages to the latest version
+      apt:
+        name: "*"
+        state: latest
+        force_apt_get: yes  
+# Sudo Group Setup
+    - name: Make sure we have a 'wheel' group
+      group:
+        name: wheel
+        state: present
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+# User + Key Setup
+    - name: Create a new regular user with sudo privileges
+      user:
+        name: "{{ create_user }}"
+        state: present
+        groups: wheel
+        append: true
+        create_home: true
+        password: "{{ userpass | password_hash('sha512') }}"
+        update_password: on_create
+        shell: /bin/bash
+    - name: Set authorized key for remote user
+      authorized_key:
+        user: "{{ create_user }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    - name: Disable password authentication for root
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin prohibit-password'
+# Install Packages
+   # - name: Update apt
+   #   apt: update_cache=yes
+   #- name: Install required system packages
+   #   apt: name={{ sys_packages }} state=latest
+# UFW Setup
+   # - name: UFW - Allow SSH connections
+   #   ufw:
+   #     rule: allow
+   #     name: OpenSSH
+   #- name: UFW - Deny all other incoming traffic by default
+   #   ufw:
+   #     state: enabled
+   #     policy: deny
+   #     direction: incoming

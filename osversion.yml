@@ -1,0 +1,5 @@
+- hosts: all
+  tasks:    
+    - name: Print OS version
+      debug:
+        msg: "OS Version: {{ ansible_distribution_version  }}"

@@ -1,0 +1,5 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: set system hostname
+      command: hostnamectl set-hostname {{ inventory_hostname }}
