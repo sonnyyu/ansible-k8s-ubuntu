@@ -49,6 +49,7 @@ ansible all -m apt -a "name=tree state=latest" -b
 ansible all -a "uptime"
 ansible all -m shell  -a "reboot" -b
 ansible all -m shell  -a "uptime"
+ansible all -m shell  -a "nproc"
 ```
 Install Kubernetes
 ```sh
