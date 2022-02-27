@@ -1,8 +1,19 @@
 # Bootstrapping a kubernetes cluster using ansible
  
  Creating a kubernetes cluster via ansible.
- 
 # Prerequisites:
+Setup Ansible:
+```sh
+sudo su devops
+cd ~
+ssh-keygen  -N "" -f ~/.ssh/id_rsa
+whoami
+```
+Get Install Software
+```sh
+git clone https://github.com/sonnyyu/ansible-k8s-ubuntu
+cd ansible-k8s-ubuntu
+```
 Setup Host file
 ```sh
 nano hosts-dev
