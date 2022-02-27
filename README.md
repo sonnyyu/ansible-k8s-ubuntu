@@ -4,6 +4,9 @@
 # Prerequisites:
 Setup Ansible:
 ```sh
+wget https://raw.githubusercontent.com/sonnyyu/ansible-k8s-ubuntu/main/setupansible.sh
+chmod +x setupansible.sh
+./setupansible.sh
 sudo su devops
 cd ~
 ssh-keygen  -N "" -f ~/.ssh/id_rsa
