@@ -27,10 +27,6 @@ kubemaster1 ansible_host=192.168.1.2
 kubeworker1 ansible_host=192.168.1.3
 kubeworker2 ansible_host=192.168.1.4
 ```
-Install Ansible at first machine (Ansible Contraller)
-```sh
-./setupansible.sh
-```
 Run Playbook to create password less login 
 ```sh
 ansible-playbook setup-ansible.yml -usonnyyu -bK --ask-pass 
