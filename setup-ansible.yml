@@ -8,23 +8,28 @@
     - create_user: devops 
     - userpass: password
   tasks:
-    - name: Remove apt lock file
-      file:
-        state: absent
-        path: "/var/lib/dpkg/lock"
-    - name: Remove apt lock file2
-      file:
-        state: absent
-        path: "/var/lib/dpkg/lock-frontend"
-    - name: Update APT Cache
+    - name: Update and upgrade apt packages
       apt:
+        upgrade: yes
         update_cache: yes
-        force_apt_get: yes
-    - name: Upgrade all packages to the latest version
-      apt:
-        name: "*"
-        state: latest
-        force_apt_get: yes  
+        cache_valid_time: 86400 
+#    - name: Remove apt lock file
+#      file:
+#        state: absent
+#        path: "/var/lib/dpkg/lock"
+#    - name: Remove apt lock file2
+#      file:
+#        state: absent
+#        path: "/var/lib/dpkg/lock-frontend"
+#    - name: Update APT Cache
+#      apt:
+#        update_cache: yes
+#        force_apt_get: yes
+#    - name: Upgrade all packages to the latest version
+#      apt:
+#        name: "*"
+#        state: latest
+#        force_apt_get: yes  
 # Sudo Group Setup
     - name: Make sure we have a 'wheel' group
       group:
@@ -59,18 +64,4 @@
         state: present
         regexp: '^#?PermitRootLogin'
         line: 'PermitRootLogin prohibit-password'
-# Install Packages
-   # - name: Update apt
-   #   apt: update_cache=yes
-   #- name: Install required system packages
-   #   apt: name={{ sys_packages }} state=latest
-# UFW Setup
-   # - name: UFW - Allow SSH connections
-   #   ufw:
-   #     rule: allow
-   #     name: OpenSSH
-   #- name: UFW - Deny all other incoming traffic by default
-   #   ufw:
-   #     state: enabled
-   #     policy: deny
-   #     direction: incoming
+
