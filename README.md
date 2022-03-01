@@ -76,6 +76,7 @@ Test kubernetes cluster
 ```sh
 ssh devops@kubemaster1_ip
 kubectl get ns
+kubectl get nodes
 kubectl get service -o wide --all-namespaces
 kubectl get deployments --all-namespaces
 kubectl get pods --all-namespaces
