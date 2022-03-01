@@ -72,6 +72,14 @@ ansible kubemaster1 -m shell  -a "systemctl status kubelet" -b
 ansible kubeworker1 -m shell  -a "systemctl status kubelet" -b
 ansible kubeworker2 -m shell  -a "systemctl status kubelet" -b 
 ```
+Test kubernetes cluster
+```sh
+ssh devops@kubemaster1_ip
+kubectl get ns
+kubectl get service -o wide --all-namespaces
+kubectl get deployments --all-namespaces
+kubectl get pods --all-namespaces
+```
 Install Nginx
 ```sh
 ansible kubemaster1 -m shell  -a "kubectl create deployment nginx --image=nginx" 
