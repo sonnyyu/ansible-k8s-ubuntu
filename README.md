@@ -29,7 +29,7 @@ kubeworker2 ansible_host=192.168.1.4
 ```
 Run Playbook to create password less login 
 ```sh
-ansible-playbook setup-ansible.yml -usonnyyu -bK --ask-pass 
+ansible-playbook setup-ansible.yml -usonnyyu -bK --ask-pass -vvv
 ```
 Test password less ssh login
 ```sh
