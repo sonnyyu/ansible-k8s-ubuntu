@@ -6,7 +6,7 @@
   become: true
   vars:
     - create_user: devops 
-    - userpass: password
+    - userpass: newpassword
   tasks:
     - name: Update and upgrade apt packages
       apt:
